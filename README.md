@@ -6,7 +6,7 @@ This online tool combines multiple minecraft commands to run at once.
 
 ### Global coordinates
 
-The tool imagines an anchor, which command blocks will use as a reference point. Said reference point is as an origin for relative coordinates. To achieve this, you can use `@{~ ~ ~}` instead of the regular `~ ~ ~`. I believe the usage is better explained by an example below. This feature allows building via commands (`setblock`, `fill`, etc) easier as you won't have to take into account the actual position of
+The tool imagines an anchor, which command blocks will use as a reference point. Said reference point is as an origin for relative coordinates. To achieve this, you can use `@{~ ~ ~}` instead of the regular `~ ~ ~`. I believe the usage is better explained by an example below. This feature allows building via commands (`setblock`, `fill`, etc) easier as you won't have to take into account the actual position of the generated command blocks, which can be troublesome when you insert commands in between.
 
 ### Example
 
@@ -21,7 +21,7 @@ setblock @{~4 ~ ~} blue_wool
 setblock @{~5 ~ ~} purple_wool
 ```
 
-is equivalent to the following output
+is equivalent to
 
 _notice the incrementing y value_
 
