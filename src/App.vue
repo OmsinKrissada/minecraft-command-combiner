@@ -133,7 +133,7 @@ const commandStr = computed(() => {
 
     let processedCommand = command
 
-    if (options.escapeDoubleQuotes) processedCommand = processedCommand.replace(/"/g, '\\"')
+    if (options.escapeDoubleQuotes) processedCommand = processedCommand.replace(/\\/g, "\\\\").replace(/\"/g, '\\"')
 
     if (options.globalCoordinates)
       processedCommand = processedCommand.replace(/@{~-?\d* ~-?\d* ~-?\d*}/g, (coords) => {
@@ -161,6 +161,12 @@ const commandStr = computed(() => {
 const clipboard = useClipboard()
 function copyOutput() {
   clipboard.copy(commandStr.value)
+}
+
+function copyEggOutput(){
+  const receiver = 'TurtleKid'
+  const result= `give ${receiver} axolotl_spawn_egg{EntityTag:{id:falling_block,BlockState:{Name:command_block},TileEntityData:{Command:"${commandStr.value.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}",auto:1b}},display:{Name:'[{"text":"Cloop-in-a-box","italic":false,"bold":true,"color":"light_purple"}]'},Enchantments:[{id:sharpness}],HideFlags:1} 1`
+  clipboard.copy(result)
 }
 
 // onMounted(() => {
@@ -242,6 +248,12 @@ function copyOutput() {
                 @click="copyOutput"
               >
                 Copy to Clipboard
+              </button>
+              <button
+                class="px-2 py-1 bg-green-600 font-medium text-sm text-white shadow-md rounded active:translate-y-[1px]"
+                @click="copyEggOutput"
+              >
+                Copy egg to Clipboard
               </button>
               <span v-if="clipboard.copied.value" class="font-medium">Done.</span>
             </div>
