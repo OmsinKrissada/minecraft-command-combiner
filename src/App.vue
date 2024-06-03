@@ -34,19 +34,39 @@ const commandStr = computed(() => {
   const size = filteredCommands.length
 
   const appendPassenger = (cmdList: string[], position: number): string => {
-    const command = cmdList.shift()
-    if (command?.startsWith('#')) return appendPassenger(cmdList, position)
-    if (!command) {
+    // const command = cmdList.shift()
+    // if (command?.startsWith('#')) return appendPassenger(cmdList, position)
+    // if (!command) {
+      let first = true
       const obj = {
         id: 'armor_stand',
         Health: 0,
         Small: 1,
         Invisible: 1,
-        Passengers: [
+        Passengers: [{
+          id: 'falling_block',
+          BlockState: { Name: 'command_block', Properties: { facing: 'up' } },
+            TileEntityData: { Command: `kill @e[type=command_block_minecart,distance=..5]` },
+
+          Passengers: [{
+            id: 'armor_stand',
+            Health: 0,
+                Small: 1,
+                Invisible: 1,
+            Passengers: [{
+              id: 'falling_block',
+              BlockState: { Name: 'chain_command_block', Properties: { facing: 'up' } },
+            TileEntityData: { Command: `fill ~ ~-3 ~ ~ ~2 ~ air` },
+
+              Passengers: [{
+                id: 'armor_stand',
+                Health: 0,
+                Small: 1,
+                Invisible: 1,
+                Passengers: [
           {
             id: 'falling_block',
-            BlockState: { Name: 'chain_command_block', Properties: { facing: 'up' } },
-            TileEntityData: { Command: `fill ~ ~4 ~ ~ ~-${size + 2} ~ air` },
+            BlockState: { Name: 'redstone_block', Properties: { facing: 'up' } },
             Passengers: [
               {
                 id: 'armor_stand',
@@ -56,67 +76,56 @@ const commandStr = computed(() => {
                 Passengers: [
                   {
                     id: 'falling_block',
-                    BlockState: { Name: 'stone' },
-                    Passengers: [
-                      {
+                    BlockState: { Name: 'activator_rail' },
+                    Passengers: [{
                         id: 'armor_stand',
                         Health: 0,
                         Small: 1,
                         Invisible: 1,
-                        Passengers: [
-                          {
-                            id: 'falling_block',
-                            BlockState: {
-                              Name: 'chain_command_block',
-                              Properties: { facing: 'down' }
-                            },
-                            TileEntityData: {
-                              Command: `setblock ~ ~-${size + 3} ~ redstone_block`
-                            },
-                            Passengers: [
-                              {
-                                id: 'armor_stand',
-                                Health: 0,
-                                Small: 1,
-                                Invisible: 1,
-                                Passengers: [
-                                  {
-                                    id: 'falling_block',
-                                    BlockState: {
-                                      Name: 'command_block',
-                                      Properties: { facing: 'down' }
-                                    },
-                                    TileEntityData: {
-                                      Command: 'gamerule commandBlockOutput false'
-                                    },
-                                    Passengers: [
-                                      {
-                                        id: 'armor_stand',
-                                        Health: 0,
-                                        Small: 1,
-                                        Invisible: 1,
-                                        Passengers: [
-                                          {
-                                            id: 'falling_block',
-                                            BlockState: { Name: 'redstone_block' }
-                                          }
-                                        ]
-                                      }
-                                    ]
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
+                        Passengers: [...cmdList, 'data merge block ~ ~-3 ~ {auto:1b}'].map(c=>{
+                          const processedCommand = c.replace(/@{~-?\d* ~-?\d* ~-?\d*}/g, (coords) => {
+                          const splitted = coords.substring(2, coords.length - 1).split('~')
+                          let [_, x, y, z] = splitted
+                          return `~${+x + 1} ~${+y - position - 1} ~${+z - 1}`
+                        })
+                        // if (first){
+                        //   first = false
+                        //   return {
+                        //     id: 'command_block_minecart',
+                        //     Command:processedCommand,
+                        //     NoGravity: 1,
+                        //     Passengers: [{
+                        //       id: 'armor_stand',
+                        //       Health: 0,
+                        //       Small: 1,
+                        //       Invisible: 1,
+                        //       Passengers: ['data merge block ~ ~-3 ~ {auto:1b}'].map(ic=>{
+                        //         return {
+                        //             id: 'command_block_minecart',
+                        //             Command: ic,
+                        //             NoGravity: 1
+                        //         }
+                        //       })
+                        //     }]
+                        //   }
+                        // }
+                          return {
+                            id: 'command_block_minecart',
+                            Command: processedCommand.replace(/\\/g, "\\\\").replace(/\"/g, '\\"'),
+                            // NoGravity: 1
+                        }})
+                  }]
+                      
                   }
                 ]
               }
             ]
           }
         ]
+              }]
+            }]
+          }]
+        }]
       }
       // return JSON.stringify(obj)
       if (options.removeDoubleQuotes)
@@ -129,7 +138,7 @@ const commandStr = computed(() => {
           '$2:$4'
         )
       else return JSON.stringify(obj)
-    }
+    // }
 
     let processedCommand = command
 
@@ -142,14 +151,14 @@ const commandStr = computed(() => {
         return `~${+x + 1} ~${+y - position - 2} ~${+z - 1}`
       })
 
-    return `{id:armor_stand,Health:0,${
-      position > 1 ? 'Small:1,' : ''
-    }Invisible:1,Passengers:[{id:falling_block,BlockState:{Name:${
-      position === 0 ? 'command_block' : 'chain_command_block'
-    },Properties:{facing:up}},TileEntityData:{Command:"${processedCommand}"},Passengers:[${appendPassenger(
-      cmdList,
-      position + 1
-    )}]}]}`
+    // return `{id:armor_stand,Health:0,${
+    //   position > 1 ? 'Small:1,' : ''
+    // }Invisible:1,Passengers:[{id:falling_block,BlockState:{Name:${
+    //   position === 0 ? 'command_block' : 'chain_command_block'
+    // },Properties:{facing:up}},TileEntityData:{Command:"${processedCommand}"},Passengers:[${appendPassenger(
+    //   cmdList,
+    //   position + 1
+    // )}]}]}`
   }
 
   return `summon falling_block ~ ~1 ~ {BlockState:{Name:stone},Passengers:[${appendPassenger(
