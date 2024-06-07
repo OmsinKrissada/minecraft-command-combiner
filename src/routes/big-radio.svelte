@@ -9,7 +9,7 @@
 <div
 	class="flex items-center justify-between gap-8 rounded-lg {checked
 		? 'bg-white/10'
-		: 'bg-white/5'} cursor-pointer px-5 py-4 text-sm/6"
+		: ' bg-white/0'} cursor-pointer border border-base-100 px-5 py-4 text-sm/6 transition-colors hover:border-current"
 	role="radio"
 	aria-checked={checked}
 >

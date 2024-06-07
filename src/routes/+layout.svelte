@@ -3,11 +3,13 @@
 	import Footer from './footer.svelte';
 </script>
 
-<div class="py-8">
-	<slot></slot>
-</div>
+<div class="flex min-h-dvh flex-col">
+	<div class="flex-grow py-8">
+		<slot></slot>
+	</div>
 
-<Footer></Footer>
+	<Footer></Footer>
+</div>
 
 <style>
 	/* div {

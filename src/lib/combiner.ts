@@ -46,7 +46,7 @@ export function generateTagList(cmdList: string[]) {
 			cmdBlockPassengerTags(
 				index === cmdList.length - 1 ? 'impulse' : 'chain',
 				'down',
-				globalCoordinateProcess(cmd, 0, -index, 0),
+				globalCoordinateProcess(cmd, 0, -index + 2, 0),
 				index === 0
 			)
 		);
