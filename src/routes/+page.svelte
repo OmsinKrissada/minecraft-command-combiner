@@ -45,12 +45,12 @@ setblock @{~5 ~ ~} purple_wool`;
 		`give @p axolotl_spawn_egg{EntityTag:{id:falling_block,BlockState:{Name:command_block},TileEntityData:{Command:"${output.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}",auto:1b}},display:{Name:'[{"text":"Cloop-in-a-box","italic":false,"bold":true,"color":"light_purple"}]'},Enchantments:[{id:sharpness}],HideFlags:1} 1`
 	);
 
-	$effect(() => {
+	function process() {
 		console.log('main processing');
 		try {
 			const tagList = generateTagList([
 				`fill ~ ~-1 ~ ~ ~${commandList.length} ~ air`,
-				...commandList.reverse()
+				...commandList.toReversed()
 			]);
 			entityCount = tagList.length;
 			output = `summon falling_block ~ ~1 ~ ${appendPassengersFromTagList(tagList)}`;
@@ -61,6 +61,14 @@ setblock @{~5 ~ ~} purple_wool`;
 			console.log('settting error as ' + err);
 			// return null;
 		}
+	}
+
+	$effect(() => {
+		process();
+	});
+
+	options.subscribe(() => {
+		process();
 	});
 
 	let outputDisplays = $derived([

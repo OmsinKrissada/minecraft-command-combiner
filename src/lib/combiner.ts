@@ -1,3 +1,15 @@
+import { options } from './stores';
+
+// let enableGlobalCoords = true;
+// options.subscribe((val) => {
+// 	enableGlobalCoords = val.globalCoords;
+// });
+
+let enableDownMotion = true;
+options.subscribe((val) => {
+	enableDownMotion = val.downMotion;
+});
+
 export function escape(text: string) {
 	return text.replace(/\\/g, '\\\\').replace(/\"/g, '\\"');
 }
@@ -15,7 +27,7 @@ function cmdBlockPassengerTags(
 	};
 	return (
 		(omitIdTag ? '' : 'id:falling_block,') +
-		`BlockState:{Name:${types[type]},Properties:{facing:${face}}},TileEntityData:{Command:"${escape(command)}",auto:1},Motion:[0.0,-10.0,0.0]`
+		`BlockState:{Name:${types[type]},Properties:{facing:${face}}},TileEntityData:{Command:"${escape(command)}",auto:1}${enableDownMotion ? ',Motion:[0d,-10d,0d]' : ''}`
 	);
 }
 
@@ -29,6 +41,7 @@ function globalCoordinateProcess(
 	offsetY: number,
 	offsetZ: number
 ) {
+	// if (!enableGlobalCoords) return command;
 	return command.replace(/@{~-?.*? ~-?.*? ~-?.*?}/g, (coords) => {
 		const splitted = coords.substring(2, coords.length - 1).split('~');
 		let [_, x, y, z] = splitted;
@@ -64,7 +77,7 @@ export function appendPassengersFromTagList(tagList: string[]): string {
 export function generateCommand(cmdList: string[]): string | null {
 	// const
 	let tagList: string[];
-	tagList = generateTagList([`fill ~ ~-1 ~ ~ ~${cmdList.length} ~ air`, ...cmdList.reverse()]);
+	tagList = generateTagList([`fill ~ ~-1 ~ ~ ~${cmdList.length} ~ air`, ...cmdList.toReversed()]);
 	return `summon falling_block ~ ~1 ~ ${appendPassengersFromTagList(tagList)}`;
 
 	// return appendPassengersFromTagList(generateTagList([...cmdList, `fill ~ ~ ~ ~ ~${cmdList.length} ~ air`]));
