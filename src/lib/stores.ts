@@ -33,7 +33,7 @@ function load() {
 			return parsed;
 		} catch (err) {
 			console.error(`Unable to parse options: ${err}`);
-			return defaultOptions;
+			return Object.assign({}, defaultOptions);
 		}
 		// const { success, data, error } = OptionSchema.safeParse(localStorage.getItem('options'));
 		// if (success) {
@@ -43,7 +43,7 @@ function load() {
 		// 	return defaultOptions;
 		// }
 	}
-	return Object.create(defaultOptions);
+	return Object.assign({}, defaultOptions);
 }
 
 export const options = writable<typeof defaultOptions>(load());

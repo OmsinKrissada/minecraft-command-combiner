@@ -1,6 +1,4 @@
 <script lang="ts">
-	import BigRadio from './big-radio.svelte';
-
 	type Modes = 'tower' | 'minecart' | undefined;
 
 	let { mode: selectedMode = $bindable() }: { mode: Modes } = $props();
@@ -24,7 +22,8 @@
 				: 'bg-white/5'} hover:bg-white-10 px-5 py-4 text-sm/6 transition-colors"
 			role="radio"
 			aria-checked={mode.id === selectedMode}
-			onclick={() => (selectedMode === mode.id ? (selectedMode = null) : (selectedMode = mode.id))}
+			onclick={() =>
+				selectedMode === mode.id ? (selectedMode = undefined) : (selectedMode = mode.id)}
 		>
 			<div class="text-left">
 				<p class="font-semibold text-white">{mode.title}</p>
